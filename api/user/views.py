@@ -2,7 +2,7 @@
 Description: 用户管理相关
 Author: Catop
 Date: 2021-06-12 13:09:25
-LastEditTime: 2021-06-12 16:49:29
+LastEditTime: 2021-06-12 20:09:14
 '''
 
 from flask import Blueprint, request, session
@@ -21,6 +21,7 @@ def user_index():
 
 @userApi.route('/register', methods = ['POST'])
 def register():
+    """用户注册"""
     ret = ""
     try:
         user_name = request.values.get('username')
@@ -49,6 +50,7 @@ def register():
 
 @userApi.route('/login', methods = ['POST'])
 def login():
+    """用户登录"""
     ret = ""
     try:
         user_phone = request.values.get('phone')
@@ -62,7 +64,7 @@ def login():
     else:
         if(common.tools.enMd5(user_passwd) == user_info['user_passwd']):
             ret = common.tools.restRet(0,"登录成功！")
-            
+            #会话控制
             session['user_phone'] = user_phone
         else:
             ret = common.tools.restRet(1,"手机号或密码错误")
@@ -72,6 +74,7 @@ def login():
 
 @userApi.route('/status', methods = ['POST'])
 def status():
+    """获取当前会话用户登录信息"""
     if(session.get('user_phone')):
         ret_info = {}
         try:
@@ -86,3 +89,9 @@ def status():
         
     else:
         return common.tools.restRet(1,"您未登录")
+
+@userApi.route('/logout', methods = ['POST'])
+def logout():
+    """用户登出"""
+    session.pop('user_phone',None)
+    return common.tools.restRet(0,"退出成功")
