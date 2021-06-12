@@ -2,18 +2,20 @@
 Description: Flask主应用
 Author: Catop
 Date: 2021-06-12 13:05:13
-LastEditTime: 2021-06-12 16:52:55
+LastEditTime: 2021-06-12 21:43:23
 '''
 import os
 import common
 from flask import Flask, session
 from datetime import timedelta
 from api.user.views import userApi
+from api.photo.views import photoApi
 
 
 
 app = Flask(__name__)
 app.register_blueprint(userApi, url_prefix='/user')
+app.register_blueprint(photoApi, url_prefix='/photo')
 
 app.config['SECRET_KEY'] = os.urandom(24)
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(days=7)  # 配置7天有效
