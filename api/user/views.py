@@ -2,7 +2,7 @@
 Description: 用户管理相关
 Author: Catop
 Date: 2021-06-12 13:09:25
-LastEditTime: 2021-06-12 20:09:14
+LastEditTime: 2021-06-13 10:49:02
 '''
 
 from flask import Blueprint, request, session
@@ -52,13 +52,15 @@ def register():
 def login():
     """用户登录"""
     ret = ""
-    try:
+    if(request.values.get('phone') and request.values.get('passwd')):
         user_phone = request.values.get('phone')
         user_passwd = request.values.get('passwd')
-        
-        user_info = common.dbconn.get_user_info(user_phone)
-    except AttributeError:
+    else:
         ret = common.tools.restRet(1,"参数不完整")
+        return ret
+    
+    try:
+        user_info = common.dbconn.get_user_info(user_phone)   
     except:
         ret = common.tools.restRet(2,"内部错误")
     else:
