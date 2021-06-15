@@ -2,7 +2,7 @@
 Description: 
 Author: Catop
 Date: 2021-06-12 21:24:43
-LastEditTime: 2021-06-13 10:42:43
+LastEditTime: 2021-06-15 13:00:23
 '''
 from flask import Blueprint, request, session
 from hashlib import md5
@@ -16,6 +16,7 @@ photoApi = Blueprint('photo', __name__)
 @photoApi.route('/get_random_photos', methods = ['POST'])
 def get_random_photos():
     """获取随机图片"""
+    ret = ""
     if(request.values.get('num')):
         num = request.values.get('num')
         num = int(num)
@@ -41,8 +42,13 @@ def get_random_photos():
                 ret_list.append(img_info)
         else:
             ret_list.append(ret_list[i-1])
+    ret_dict = {}
+    ret_dict['img_num'] = num
+    ret_dict['img_list'] = ret_list
 
-    return str(ret_list)
+    ret = common.tools.restRet(0,"success",ret_dict)
+
+    return ret
 
 
 @photoApi.route('/save_photo', methods = ['POST'])
