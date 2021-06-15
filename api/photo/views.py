@@ -2,7 +2,7 @@
 Description: 
 Author: Catop
 Date: 2021-06-12 21:24:43
-LastEditTime: 2021-06-15 13:00:23
+LastEditTime: 2021-06-15 17:36:03
 '''
 from flask import Blueprint, request, session
 from hashlib import md5
@@ -10,6 +10,7 @@ import datetime
 import json
 import common
 import requests
+from api.photo.testimg import imgs
 
 photoApi = Blueprint('photo', __name__)
 
@@ -26,22 +27,17 @@ def get_random_photos():
     ret_list = []
     
     for i in range(0,num):
+        img_idx = i%6
+        ori_imgs = imgs.original_imgs
+        com_imgs = imgs.compressed_imgs
 
-        if(i%3 == 0):
-            res = requests.get("https://api.ixiaowai.cn/api/api.php?return=json",verify=False)
-            text = res.text  
-            res_dict = json.loads(text.encode('utf8')[3:].decode('utf8'))
+        img_info = {}
+        img_info['img_url_original'] = ori_imgs[img_idx]
+        img_info['img_url_compressed'] = com_imgs[img_idx]
 
-            if(res_dict['code'] == '200'):
-                img_info = {}
-                img_info['img_name'] = 'foo'
-                img_info['img_url'] = res_dict['imgurl']
-                img_info['width'] = res_dict['width']
-                img_info['height'] = res_dict['height']
-                
-                ret_list.append(img_info)
-        else:
-            ret_list.append(ret_list[i-1])
+        ret_list.append(img_info)
+
+
     ret_dict = {}
     ret_dict['img_num'] = num
     ret_dict['img_list'] = ret_list
